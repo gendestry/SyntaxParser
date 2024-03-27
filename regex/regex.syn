@@ -1,0 +1,21 @@
+begin -> inter+
+
+inter -> paren
+inter -> ops
+
+ops -> escapeOP
+ops -> txtOp
+
+paren -> lpar ops (or ops)+ rpar operators?
+
+txtOp -> txt (operators)?
+
+escapeOP -> escape (operators)?
+escape -> \c
+escape -> \C
+escape -> \T
+escape -> \d
+escape -> \n
+
+operators -> plus
+operators -> asterix

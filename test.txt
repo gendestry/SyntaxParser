@@ -1,0 +1,57 @@
+a = 0
+b = 0
+c = a * 10
+
+d = a * (b + c - a / 1) / 2
+
+let = 'let'
+identifier = '\w'
+
+
+
+'a'*
+'a'+
+[a-z]
+[a-z]*
+
+
+start -> t
+
+t -> id
+
+
+brack + text + brack
+
+
+constB = ('true' | 'false')
+constI = ([1-9][0-9]*|'0')
+constC = '\''\c'\''
+constS = '"'\c+'"'
+
+
+
+\c\d\n
+'asd'
+[-]()
+'a'+
+
+
+ q
+
+
+
+
+
+
+
+begin -> neki+
+
+neki -> '
+neki -> + 
+
+neki -> escape
+
+escape -> \c
+escape -> \C
+escape -> \d
+
