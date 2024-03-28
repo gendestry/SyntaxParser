@@ -6,6 +6,8 @@
 namespace Regex
 {
     using TokenArray = std::vector<Regex::Token>;
+    using OpType = AstNodeOps::OpType;
+    using EscapeType = AstNodeEscape::EscapeType;
     using Pos = unsigned int;
 
     class Syntax
@@ -13,11 +15,28 @@ namespace Regex
     private:
         Pos m_TokenPos = 0;
         const TokenArray &m_Tokens;
+
         std::vector<AstNode *> m_AstTree;
+        std::vector<AstNodeOps *> m_Ops;
+        OpType m_OpType = OpType::NONE;
+        EscapeType m_EscapeType = EscapeType::CHAR;
 
     public:
         Syntax(const TokenArray &tokens) : m_Tokens(tokens)
         {
+        }
+
+        ~Syntax()
+        {
+            for (auto &node : m_AstTree)
+            {
+                delete node;
+            }
+
+            for (auto &node : m_Ops)
+            {
+                delete node;
+            }
         }
 
         bool parse()
@@ -35,12 +54,14 @@ namespace Regex
         bool isInter();
 
         bool isParen();
-        bool isOps();
+        int isOps();
 
         bool isEscapeOp();
         bool isTxtOp();
 
         bool isEscape();
         bool isOperator();
+
+        void printAst();
     };
 };

@@ -34,6 +34,8 @@ int main(int argc, char **argv)
 
         Regex::Syntax syntax(tokenizer.get_tokens());
         std::cout << syntax.parse() << std::endl;
+        syntax.printAst();
+        std::cout << std::endl;
     }
 
     return 0;
