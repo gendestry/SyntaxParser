@@ -33,6 +33,11 @@ namespace Regex
             m_AstTree.push_back(m_Op);
             return true;
         }
+        else if (isRangeOp())
+        {
+            m_AstTree.push_back(m_Op);
+            return true;
+        }
 
         m_TokenPos = old;
         return false;
@@ -140,6 +145,51 @@ namespace Regex
 
             m_Op = new AstNodeTxt({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, m_Tokens[old].txt_value, m_OpType);
             return true;
+        }
+
+        m_TokenPos = old;
+        return false;
+    }
+
+    bool Syntax::isRangeOp()
+    {
+        auto isValidCharToken = [&]() -> bool
+        {
+            return m_Tokens[m_TokenPos].type == Token::C || m_Tokens[m_TokenPos].type == Token::CC || m_Tokens[m_TokenPos].type == Token::N;
+        };
+
+        if (m_TokenPos >= m_Tokens.size())
+            return false;
+
+        Pos old = m_TokenPos;
+        if (m_Tokens[m_TokenPos].type == Token::LBRACK)
+        {
+            m_TokenPos++;
+            if (isValidCharToken())
+            {
+                m_TokenPos++;
+                if (m_Tokens[m_TokenPos].type == Token::MINUS)
+                {
+                    m_TokenPos++;
+                    if (isValidCharToken())
+                    {
+                        if (m_Tokens[old + 1].type != m_Tokens[m_TokenPos].type)
+                        {
+                            return false;
+                        }
+
+                        m_TokenPos++;
+                        if (m_Tokens[m_TokenPos].type == Token::RBRACK)
+                        {
+                            m_TokenPos++;
+                            isOperator();
+
+                            m_Op = new AstNodeRange({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, m_Tokens[old + 1].c_value, m_Tokens[old + 3].c_value, m_OpType);
+                            return true;
+                        }
+                    }
+                }
+            }
         }
 
         m_TokenPos = old;

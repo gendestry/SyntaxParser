@@ -5,7 +5,7 @@
 
 namespace Regex
 {
-    using TokenArray = std::vector<Regex::Token>;
+    using TokenArray = std::vector<Token>;
     using Pattern = std::vector<AstNodeOps *>;
     using OpType = AstNodeOps::OpType;
     using EscapeType = AstNodeEscape::EscapeType;
@@ -46,6 +46,7 @@ namespace Regex
         bool isParen();
         bool isEscapeOp();
         bool isTxtOp();
+        bool isRangeOp();
 
         bool isEscape();
         bool isOperator();

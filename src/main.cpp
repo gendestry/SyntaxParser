@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
 #include "regex/regex.h"
 
 int main(int argc, char **argv)
@@ -13,11 +14,10 @@ int main(int argc, char **argv)
     }
 
     std::string line;
+    std::unordered_map<std::string, Regex::Regex &> tokenMap;
     while (std::getline(file, line))
     {
-        // get string until first whitespace or equals sign
-
-        if (line[0] == '#')
+        if (line[0] == '#' || line.empty())
             continue;
 
         size_t namePos = line.find_first_of("= ");
@@ -32,14 +32,15 @@ int main(int argc, char **argv)
         // std::cout << "Pattern: " << pattern << " " << pattern.size() << std::endl;
 
         Regex::Regex regex(pattern);
+        // tokenMap[name] = regex;
         // regex.print_tokens();
-        // regex.print_ast();
-        // return 0;
+        // regex.printAst();
+        regex.prettyPrint();
         if (argc == 2)
         {
             if (regex.match(argv[1]))
             {
-                std::cout << "Perfect" << std::endl;
+                std::cout << "Matched token: '" << name << "'" << std::endl;
             }
             else
             {

@@ -37,9 +37,6 @@ namespace Regex
 
     Match AstNodeParen::match(std::string text, unsigned int start)
     {
-        if (start >= text.size())
-            return {false, start};
-
         unsigned int s = start;
         unsigned int m = _match(text, start);
 
@@ -226,6 +223,57 @@ namespace Regex
         return {false, s};
     }
 
+    unsigned int AstNodeRange::_match(std::string text, unsigned int start)
+    {
+        if (start >= text.size())
+            return start;
+
+        if (m_Start <= text[start] && text[start] <= m_End)
+            return start + 1;
+
+        return start;
+    }
+
+    Match AstNodeRange::match(std::string text, unsigned int start)
+    {
+        unsigned int s = start;
+        unsigned int m = _match(text, start);
+
+        switch (m_OpType)
+        {
+        case NONE:
+            return {m != s, m};
+        case PLUS:
+            if (m != s)
+            {
+                s = m;
+                m = _match(text, s);
+
+                while (m != s)
+                {
+                    s = m;
+                    m = _match(text, s);
+                }
+
+                return {true, m};
+            }
+
+            return {false, s};
+        case ASTERIX:
+            while (m != s)
+            {
+                s = m;
+                m = _match(text, s);
+            }
+
+            return {true, m};
+        case QUESTION_MARK:
+            return {true, m};
+        }
+
+        return {false, s};
+    }
+
     std::string AstNodeParen::toString()
     {
         std::string str = "AstOrNode[";
@@ -251,6 +299,11 @@ namespace Regex
     std::string AstNodeTxt::toString()
     {
         return "TxtNode['" + txt + "']" + toOpString();
+    }
+
+    std::string AstNodeRange::toString()
+    {
+        return "RangeNode[" + std::to_string(m_Start) + "-" + std::to_string(m_End) + "]" + toOpString();
     }
 
     std::string AstNodeParen::toPrettyString()
@@ -280,4 +333,13 @@ namespace Regex
         return Font::fblue + "'" + txt + toOpString() + "'" + Font::reset;
     }
 
+    std::string AstNodeRange::toPrettyString()
+    {
+        std::string ret = "[";
+        ret += m_Start;
+        ret += "-";
+        ret += m_End;
+        ret += "]";
+        return Font::fgreen + ret + toOpString() + Font::reset;
+    }
 };

@@ -77,6 +77,9 @@ void Tokenizer::tokenize(bool ignore_whitespace)
         case '?':
             tokens.push_back(Token(i, i, Token::QUESTION_MARK));
             break;
+        case '-':
+            tokens.push_back(Token(i, i, Token::MINUS));
+            break;
         case '[':
             tokens.push_back(Token(i, i, Token::LBRACK));
             break;
@@ -92,6 +95,19 @@ void Tokenizer::tokenize(bool ignore_whitespace)
         case '|':
             tokens.push_back(Token(i, i, Token::OR));
             break;
+        default:
+            if ((c >= 'a' && c <= 'z'))
+            {
+                tokens.push_back(Token(i, i, Token::C, c));
+            }
+            else if (c >= 'A' && c <= 'Z')
+            {
+                tokens.push_back(Token(i, i, Token::CC, c));
+            }
+            else if (c >= '0' && c <= '9')
+            {
+                tokens.push_back(Token(i, i, Token::N, c));
+            }
         };
     }
 }

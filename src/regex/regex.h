@@ -15,9 +15,15 @@ namespace Regex
 
     public:
         Regex(std::string pattern);
+        Regex(const Regex &other);
+        Regex(Regex &&other) noexcept;
 
-        void print_tokens();
-        void print_ast();
+        Regex &operator=(const Regex &other);
+        Regex &operator=(Regex &&other) noexcept;
+
+        void printTokens();
+        void printAst();
+        void prettyPrint();
 
         bool match(std::string text);
     };

@@ -9,6 +9,7 @@ namespace Regex
         int startPos;
         int endPos;
 
+        char c_value;
         int i_value;
         std::string txt_value;
 
@@ -21,9 +22,14 @@ namespace Regex
             NEWLINE,
             TXT,
 
+            C,
+            CC,
+            N,
+
             PLUS,
             ASTERIX,
             QUESTION_MARK,
+            MINUS,
             OR,
 
             LBRACK,
@@ -41,6 +47,14 @@ namespace Regex
             this->startPos = startPos;
             this->endPos = endPos;
             this->type = type;
+        }
+
+        Token(int startPos, int endPos, Type type, char c_value)
+        {
+            this->startPos = startPos;
+            this->endPos = endPos;
+            this->type = type;
+            this->c_value = c_value;
         }
 
         Token(int startPos, int endPos, Type type, int i_value)
@@ -88,6 +102,9 @@ namespace Regex
             case Token::QUESTION_MARK:
                 type = "QUESTION_MARK";
                 break;
+            case Token::MINUS:
+                type = "MINUS";
+                break;
             case Token::LBRACK:
                 type = "LBRACK";
                 break;
@@ -108,6 +125,15 @@ namespace Regex
                 break;
             case Token::OR:
                 type = "OR";
+                break;
+            case Token::C:
+                type = "C";
+                break;
+            case Token::CC:
+                type = "CC";
+                break;
+            case Token::N:
+                type = "N";
                 break;
             default:
                 type = "UNKNOWN";

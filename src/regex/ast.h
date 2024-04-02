@@ -136,4 +136,20 @@ namespace Regex
         std::string toString() override;
         std::string toPrettyString() override;
     };
+
+    class AstNodeRange : public AstNodeOps
+    {
+    public:
+        char m_Start, m_End;
+        AstNodeRange(Location loc, char start, char end, OpType optype = OpType::NONE) : AstNodeOps(loc), m_Start(start), m_End(end)
+        {
+            m_OpType = optype;
+        }
+
+        unsigned int _match(std::string text, unsigned int start) override;
+        Match match(std::string text, unsigned int start) override;
+
+        std::string toString() override;
+        std::string toPrettyString() override;
+    };
 };
