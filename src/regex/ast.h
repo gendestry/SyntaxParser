@@ -53,9 +53,9 @@ namespace Regex
     class AstNodeParen : public AstNodeOps
     {
     public:
-        std::vector<AstNodeOps *> m_Ops;
+        std::vector<std::vector<AstNodeOps *>> m_Ops;
 
-        AstNodeParen(Location loc, std::vector<AstNodeOps *> ops, OpType optype = OpType::NONE) : AstNodeOps(loc), m_Ops(ops)
+        AstNodeParen(Location loc, std::vector<std::vector<AstNodeOps *>> ops, OpType optype = OpType::NONE) : AstNodeOps(loc), m_Ops(ops)
         {
             m_OpType = optype;
         }
@@ -64,7 +64,10 @@ namespace Regex
         {
             for (auto &op : m_Ops)
             {
-                delete op;
+                for (auto &o : op)
+                {
+                    delete o;
+                }
             }
         }
 

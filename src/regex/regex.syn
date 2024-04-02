@@ -6,7 +6,7 @@ inter -> ops
 ops -> escapeOP
 ops -> txtOp
 
-paren -> lpar ops (or ops)+ rpar operators?
+paren -> lpar inter+ (or inter+)+ rpar operators?
 
 txtOp -> txt (operators)?
 

@@ -1,18 +1,38 @@
 #include "ast.h"
 #include "../utils/font.h"
+#include <iostream>
 
 namespace Regex
 {
-    unsigned int AstNodeParen::_match(std::string text, unsigned int start)
+    unsigned int AstNodeParen::_match(std::string text, unsigned int st)
     {
-        for (auto &op : m_Ops)
+        unsigned int start = st;
+        for (auto &subPattern : m_Ops)
         {
-            auto [matched, current] = op->match(text, start);
-            if (matched)
-                return current;
+            bool allMatched = true;
+            for (unsigned int i = 0; i < subPattern.size(); i++)
+            {
+                auto &op = subPattern[i];
+                // std::cout << "Matching: " << op->toPrettyString() << std::endl;
+                auto [matched, current] = op->match(text, start);
+                if (matched)
+                {
+                    // std::cout << "SUB_Matched: '" << text.substr(start, current - start) << "'" << std::endl;
+                }
+                else
+                {
+                    // std::cout << "SUB_Not matched" << std::endl;
+                    allMatched = false;
+                    break;
+                }
+                start = current;
+            }
+
+            if (allMatched)
+                return start;
         }
 
-        return start;
+        return st;
     }
 
     Match AstNodeParen::match(std::string text, unsigned int start)
@@ -79,26 +99,31 @@ namespace Regex
             {
                 return start + 1;
             }
+            break;
         case BIG_CHAR:
             if (checkBigChar(text[start]))
             {
                 return start + 1;
             }
+            break;
         case ANY_CHAR:
             if (checkSmallChar(text[start]) || checkBigChar(text[start]))
             {
                 return start + 1;
             }
+            break;
         case DIGIT:
             if (checkDigit(text[start]))
             {
                 return start + 1;
             }
+            break;
         case NEWLINE:
             if (text[start] == '\n')
             {
                 return start + 1;
             }
+            break;
         }
 
         return start;
@@ -206,10 +231,14 @@ namespace Regex
         std::string str = "AstOrNode[";
         for (auto &op : m_Ops)
         {
-            str += op->toString() + ", ";
+            for (auto &o : op)
+            {
+                str += o->toString();
+            }
+            str += " | ";
         }
 
-        str = str.substr(0, str.size() - 2);
+        str = str.substr(0, str.size() - 3);
         str += "]";
         return str + toOpString();
     }
@@ -229,7 +258,11 @@ namespace Regex
         std::string str = Font::fmagenta + "(";
         for (auto &op : m_Ops)
         {
-            str += op->toPrettyString() + " | ";
+            for (auto &o : op)
+            {
+                str += o->toPrettyString();
+            }
+            str += " | ";
         }
 
         str = str.substr(0, str.size() - 3);

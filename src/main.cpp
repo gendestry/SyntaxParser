@@ -32,6 +32,9 @@ int main(int argc, char **argv)
         // std::cout << "Pattern: " << pattern << " " << pattern.size() << std::endl;
 
         Regex::Regex regex(pattern);
+        // regex.print_tokens();
+        // regex.print_ast();
+        // return 0;
         if (argc == 2)
         {
             if (regex.match(argv[1]))

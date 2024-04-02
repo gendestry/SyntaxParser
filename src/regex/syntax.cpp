@@ -40,17 +40,24 @@ namespace Regex
 
     bool Syntax::isParen()
     {
+        std::vector<std::vector<AstNodeOps *>> or_ops;
+        std::vector<AstNodeOps *> ops;
+
         auto isOr = [&]() -> bool
         {
             Pos old = m_TokenPos;
             if (m_Tokens[m_TokenPos++].type == Token::OR)
             {
-                if (isEscapeOp())
+                if (isParen() || isEscapeOp() || isTxtOp())
                 {
-                    return true;
-                }
-                else if (isTxtOp())
-                {
+                    ops.push_back(m_Op);
+                    while (isParen() || isEscapeOp() || isTxtOp())
+                    {
+                        ops.push_back(m_Op);
+                    }
+
+                    or_ops.push_back(ops);
+                    ops.clear();
                     return true;
                 }
             }
@@ -59,44 +66,46 @@ namespace Regex
             return false;
         };
 
-        std::vector<AstNodeOps *> ops;
         Pos old = m_TokenPos;
 
         if (m_Tokens[m_TokenPos].type == Token::LPAREN)
         {
+            // lpar {inter+} (or inter+)+ rpar operators?
             m_TokenPos++;
-            if (isEscapeOp() || isTxtOp())
+            if (isParen() || isEscapeOp() || isTxtOp())
             {
                 ops.push_back(m_Op);
-                if (isOr())
-                {
-                    ops.push_back(m_Op);
-                }
-                else
-                {
-                    m_TokenPos = old;
-                    return false;
-                }
-                while (isOr())
+                while (isParen() || isEscapeOp() || isTxtOp())
                 {
                     ops.push_back(m_Op);
                 }
 
-                if (m_Tokens[m_TokenPos++].type == Token::RPAREN)
-                {
-                    isOperator();
-                    m_Op = new AstNodeParen({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, ops, m_OpType);
-                    return true;
-                }
+                or_ops.push_back(ops);
+                ops.clear();
             }
-
-            for (auto &op : ops)
+            else
             {
-                delete op;
+                m_TokenPos = old;
+                return false;
             }
 
-            m_TokenPos = old;
-            return false;
+            // lpar inter+ {(or inter+)}+ rpar operators?
+            if (!isOr())
+            {
+                m_TokenPos = old;
+                return false;
+            }
+
+            // lpar inter+ (or inter+){+} rpar operators?
+            while (isOr())
+                ;
+
+            if (m_Tokens[m_TokenPos++].type == Token::RPAREN)
+            {
+                isOperator();
+                m_Op = new AstNodeParen({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, or_ops, m_OpType);
+                return true;
+            }
         }
 
         m_TokenPos = old;
