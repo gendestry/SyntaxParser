@@ -74,8 +74,8 @@ void Tokenizer::tokenize(bool ignore_whitespace)
         case '*':
             tokens.push_back(Token(i, i, Token::ASTERIX));
             break;
-        case '-':
-            tokens.push_back(Token(i, i, Token::MINUS));
+        case '?':
+            tokens.push_back(Token(i, i, Token::QUESTION_MARK));
             break;
         case '[':
             tokens.push_back(Token(i, i, Token::LBRACK));

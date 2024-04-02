@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include "regex/tokenizer.h"
-#include "regex/syntax.h"
+#include "regex/regex.h"
 
 int main(int argc, char **argv)
 {
@@ -20,6 +19,7 @@ int main(int argc, char **argv)
 
         if (line[0] == '#')
             continue;
+
         size_t namePos = line.find_first_of("= ");
         std::string name = line.substr(0, namePos);
 
@@ -31,15 +31,21 @@ int main(int argc, char **argv)
         // std::cout << "Var: " << name << " " << namePos << std::endl;
         // std::cout << "Pattern: " << pattern << " " << pattern.size() << std::endl;
 
-        Regex::Tokenizer tokenizer(pattern);
-        tokenizer.tokenize();
-        tokenizer.print_tokens();
-
-        Regex::Syntax syntax(tokenizer.get_tokens());
-        if (syntax.parse())
+        Regex::Regex regex(pattern);
+        if (argc == 2)
         {
-            syntax.printAst();
-            std::cout << std::endl;
+            if (regex.match(argv[1]))
+            {
+                std::cout << "Perfect" << std::endl;
+            }
+            else
+            {
+                std::cout << "Invalid match" << std::endl;
+            }
+        }
+        else
+        {
+            std::cout << "Missing input argument" << std::endl;
         }
     }
 

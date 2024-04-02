@@ -6,6 +6,7 @@
 namespace Regex
 {
     using TokenArray = std::vector<Regex::Token>;
+    using AstTree = std::vector<AstNodeOps *>;
     using OpType = AstNodeOps::OpType;
     using EscapeType = AstNodeEscape::EscapeType;
     using Pos = unsigned int;
@@ -16,7 +17,7 @@ namespace Regex
         Pos m_TokenPos = 0;
         const TokenArray &m_Tokens;
 
-        std::vector<AstNodeOps *> m_AstTree;
+        AstTree m_AstTree;
 
         AstNodeOps *m_Op;
         OpType m_OpType = OpType::NONE;
@@ -35,17 +36,7 @@ namespace Regex
             }
         }
 
-        bool parse()
-        {
-            if (isInter())
-            {
-                while (isInter())
-                    ;
-                return true;
-            }
-
-            return false;
-        }
+        bool parse();
 
         bool isInter();
 
@@ -57,5 +48,10 @@ namespace Regex
         bool isOperator();
 
         void printAst();
+
+        AstTree &getAstTree()
+        {
+            return m_AstTree;
+        }
     };
 };

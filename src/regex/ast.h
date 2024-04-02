@@ -1,26 +1,37 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "../utils/font.h"
 
 namespace Regex
 {
-
-    class AstNode
+    struct Match
     {
-    public:
-        virtual std::string toString() = 0;
+        bool matched = false;
+        unsigned int current = 0;
     };
 
-    class AstNodeOps : public AstNode
+    class AstNodeOps
     {
     public:
         enum OpType
         {
             PLUS,
             ASTERIX,
+            QUESTION_MARK,
             NONE
         } m_OpType = NONE;
+
+        struct Location
+        {
+            int start;
+            int end;
+        } m_Location;
+
+        AstNodeOps(Location location) : m_Location(location) {}
+
+        virtual std::string toString() = 0;
+        virtual unsigned int _match(std::string text, unsigned int start) = 0;
+        virtual Match match(std::string text, unsigned int start) = 0;
 
         std::string toOpString()
         {
@@ -30,6 +41,8 @@ namespace Regex
                 return "\x1B[35m+\x1B[0m";
             case ASTERIX:
                 return "\x1B[35m*\x1B[0m";
+            case QUESTION_MARK:
+                return "\x1B[35m?\x1B[0m";
             default:
                 return "\x1B[35mX\x1B[0m";
             }
@@ -39,25 +52,28 @@ namespace Regex
     class AstNodeParen : public AstNodeOps
     {
     public:
-        std::vector<AstNodeOps *> ops;
+        std::vector<AstNodeOps *> m_Ops;
 
-        AstNodeParen(std::vector<AstNodeOps *> ops, OpType optype = OpType::NONE) : ops(ops)
+        AstNodeParen(Location loc, std::vector<AstNodeOps *> ops, OpType optype = OpType::NONE) : AstNodeOps(loc), m_Ops(ops)
         {
             m_OpType = optype;
         }
 
         ~AstNodeParen()
         {
-            for (auto &op : ops)
+            for (auto &op : m_Ops)
             {
                 delete op;
             }
         }
 
+        unsigned int _match(std::string text, unsigned int start) override;
+        Match match(std::string text, unsigned int start) override;
+
         std::string toString() override
         {
             std::string str = "AstOrNode<" + toOpString() + ">[";
-            for (auto &op : ops)
+            for (auto &op : m_Ops)
             {
                 str += op->toString() + ",";
             }
@@ -97,10 +113,13 @@ namespace Regex
             }
         }
 
-        AstNodeEscape(EscapeType escapeType, OpType optype = OpType::NONE) : m_EscapeType(escapeType)
+        AstNodeEscape(Location loc, EscapeType escapeType, OpType optype = OpType::NONE) : AstNodeOps(loc), m_EscapeType(escapeType)
         {
             m_OpType = optype;
         }
+
+        unsigned int _match(std::string text, unsigned int start) override;
+        Match match(std::string text, unsigned int start) override;
 
         std::string toString() override
         {
@@ -112,10 +131,13 @@ namespace Regex
     {
     public:
         std::string txt;
-        AstNodeTxt(std::string txt, OpType optype = OpType::NONE) : txt(txt)
+        AstNodeTxt(Location loc, std::string txt, OpType optype = OpType::NONE) : AstNodeOps(loc), txt(txt)
         {
             m_OpType = optype;
         }
+
+        unsigned int _match(std::string text, unsigned int start) override;
+        Match match(std::string text, unsigned int start) override;
 
         std::string toString() override
         {

@@ -3,6 +3,18 @@
 
 namespace Regex
 {
+    bool Syntax::parse()
+    {
+        if (isInter())
+        {
+            while (isInter())
+                ;
+            return true;
+        }
+
+        return false;
+    }
+
     bool Syntax::isInter()
     {
         Pos old = m_TokenPos;
@@ -64,7 +76,7 @@ namespace Regex
                 if (m_Tokens[m_TokenPos++].type == Token::RPAREN)
                 {
                     isOperator();
-                    m_Op = new AstNodeParen(ops, m_OpType);
+                    m_Op = new AstNodeParen({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, ops, m_OpType);
                     return true;
                 }
             }
@@ -89,7 +101,7 @@ namespace Regex
         {
             isOperator();
 
-            m_Op = new AstNodeEscape(m_EscapeType, m_OpType);
+            m_Op = new AstNodeEscape({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, m_EscapeType, m_OpType);
             return true;
         }
 
@@ -108,7 +120,7 @@ namespace Regex
             m_TokenPos++;
             isOperator();
 
-            m_Op = new AstNodeTxt(m_Tokens[old].txt_value, m_OpType);
+            m_Op = new AstNodeTxt({m_Tokens[old].startPos, m_Tokens[m_TokenPos].endPos}, m_Tokens[old].txt_value, m_OpType);
             return true;
         }
 
@@ -161,6 +173,9 @@ namespace Regex
             break;
         case Token::ASTERIX:
             m_OpType = AstNodeOps::ASTERIX;
+            break;
+        case Token::QUESTION_MARK:
+            m_OpType = AstNodeOps::QUESTION_MARK;
             break;
         default:
             m_OpType = OpType::NONE;

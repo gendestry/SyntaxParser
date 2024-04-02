@@ -23,7 +23,7 @@ namespace Regex
 
             PLUS,
             ASTERIX,
-            MINUS,
+            QUESTION_MARK,
             OR,
 
             LBRACK,
@@ -85,8 +85,8 @@ namespace Regex
             case Token::ASTERIX:
                 type = "ASTERIX";
                 break;
-            case Token::MINUS:
-                type = "MINUS";
+            case Token::QUESTION_MARK:
+                type = "QUESTION_MARK";
                 break;
             case Token::LBRACK:
                 type = "LBRACK";
