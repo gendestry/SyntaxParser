@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "../utils/font.h"
 
 namespace Regex
 {
@@ -199,4 +200,51 @@ namespace Regex
 
         return {false, s};
     }
+
+    std::string AstNodeParen::toString()
+    {
+        std::string str = "AstOrNode[";
+        for (auto &op : m_Ops)
+        {
+            str += op->toString() + ", ";
+        }
+
+        str = str.substr(0, str.size() - 2);
+        str += "]";
+        return str + toOpString();
+    }
+
+    std::string AstNodeEscape::toString()
+    {
+        return "EscapeNode[" + toEscapeString() + "]" + toOpString();
+    }
+
+    std::string AstNodeTxt::toString()
+    {
+        return "TxtNode['" + txt + "']" + toOpString();
+    }
+
+    std::string AstNodeParen::toPrettyString()
+    {
+        std::string str = Font::fmagenta + "(";
+        for (auto &op : m_Ops)
+        {
+            str += op->toPrettyString() + " | ";
+        }
+
+        str = str.substr(0, str.size() - 3);
+        str += Font::fmagenta + ")";
+        return str + toOpString() + Font::reset;
+    }
+
+    std::string AstNodeEscape::toPrettyString()
+    {
+        return Font::fred + toEscapeString() + toOpString() + Font::reset;
+    }
+
+    std::string AstNodeTxt::toPrettyString()
+    {
+        return Font::fblue + "'" + txt + toOpString() + "'" + Font::reset;
+    }
+
 };

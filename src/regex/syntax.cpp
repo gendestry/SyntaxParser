@@ -68,6 +68,15 @@ namespace Regex
             if (isEscapeOp() || isTxtOp())
             {
                 ops.push_back(m_Op);
+                if (isOr())
+                {
+                    ops.push_back(m_Op);
+                }
+                else
+                {
+                    m_TokenPos = old;
+                    return false;
+                }
                 while (isOr())
                 {
                     ops.push_back(m_Op);

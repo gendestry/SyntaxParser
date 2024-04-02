@@ -30,6 +30,7 @@ namespace Regex
         AstNodeOps(Location location) : m_Location(location) {}
 
         virtual std::string toString() = 0;
+        virtual std::string toPrettyString() = 0;
         virtual unsigned int _match(std::string text, unsigned int start) = 0;
         virtual Match match(std::string text, unsigned int start) = 0;
 
@@ -38,13 +39,13 @@ namespace Regex
             switch (m_OpType)
             {
             case PLUS:
-                return "\x1B[35m+\x1B[0m";
+                return "+";
             case ASTERIX:
-                return "\x1B[35m*\x1B[0m";
+                return "*";
             case QUESTION_MARK:
-                return "\x1B[35m?\x1B[0m";
+                return "?";
             default:
-                return "\x1B[35mX\x1B[0m";
+                return "";
             }
         }
     };
@@ -70,16 +71,8 @@ namespace Regex
         unsigned int _match(std::string text, unsigned int start) override;
         Match match(std::string text, unsigned int start) override;
 
-        std::string toString() override
-        {
-            std::string str = "AstOrNode<" + toOpString() + ">[";
-            for (auto &op : m_Ops)
-            {
-                str += op->toString() + ",";
-            }
-            str += "]";
-            return str;
-        }
+        std::string toString() override;
+        std::string toPrettyString() override;
     };
 
     class AstNodeEscape : public AstNodeOps
@@ -99,17 +92,17 @@ namespace Regex
             switch (m_EscapeType)
             {
             case CHAR:
-                return "\x1B[31mc\x1B[0m";
+                return "\\c";
             case BIG_CHAR:
-                return "\x1B[31mC\x1B[0m";
+                return "\\C";
             case ANY_CHAR:
-                return "\x1B[31mT\x1B[0m";
+                return "\\T";
             case DIGIT:
-                return "\x1B[31md\x1B[0m";
+                return "\\d";
             case NEWLINE:
-                return "\x1B[31mn\x1B[0m";
+                return "\\n";
             default:
-                return "\x1B[31mX\x1B[0m";
+                return "\\X";
             }
         }
 
@@ -121,10 +114,8 @@ namespace Regex
         unsigned int _match(std::string text, unsigned int start) override;
         Match match(std::string text, unsigned int start) override;
 
-        std::string toString() override
-        {
-            return "EscapeNode<" + toOpString() + ">[" + toEscapeString() + "]";
-        }
+        std::string toString() override;
+        std::string toPrettyString() override;
     };
 
     class AstNodeTxt : public AstNodeOps
@@ -139,9 +130,7 @@ namespace Regex
         unsigned int _match(std::string text, unsigned int start) override;
         Match match(std::string text, unsigned int start) override;
 
-        std::string toString() override
-        {
-            return "TxtNode<" + toOpString() + ">[\x1B[36m'" + txt + "'\x1B[0m]";
-        }
+        std::string toString() override;
+        std::string toPrettyString() override;
     };
 };

@@ -6,7 +6,7 @@
 namespace Regex
 {
     using TokenArray = std::vector<Regex::Token>;
-    using AstTree = std::vector<AstNodeOps *>;
+    using Pattern = std::vector<AstNodeOps *>;
     using OpType = AstNodeOps::OpType;
     using EscapeType = AstNodeEscape::EscapeType;
     using Pos = unsigned int;
@@ -14,11 +14,14 @@ namespace Regex
     class Syntax
     {
     private:
+        // our ast tree or pattern
+        Pattern m_AstTree;
+
+        // keeping tract of tokens and positions
         Pos m_TokenPos = 0;
         const TokenArray &m_Tokens;
 
-        AstTree m_AstTree;
-
+        // for parsing
         AstNodeOps *m_Op;
         OpType m_OpType = OpType::NONE;
         EscapeType m_EscapeType = EscapeType::CHAR;
@@ -49,7 +52,7 @@ namespace Regex
 
         void printAst();
 
-        AstTree &getAstTree()
+        inline Pattern &getPattern()
         {
             return m_AstTree;
         }

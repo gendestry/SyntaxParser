@@ -32,14 +32,14 @@ namespace Regex
         if (!m_Valid)
             return false;
 
-        AstTree &ast = m_Syntax->getAstTree();
+        Pattern &pattern = m_Syntax->getPattern();
         unsigned int start = 0;
 
-        for (Pos i = 0; i < ast.size(); i++)
+        for (Pos i = 0; i < pattern.size(); i++)
         {
-            std::cout << "Matching: " << ast[i]->toString() << std::endl;
+            std::cout << "Matching: " << pattern[i]->toPrettyString() << std::endl;
 
-            auto [matched, current] = ast[i]->match(text, start);
+            auto [matched, current] = pattern[i]->match(text, start);
             if (matched)
             {
                 std::cout << "Matched: '" << text.substr(start, current - start) << "'" << std::endl;
