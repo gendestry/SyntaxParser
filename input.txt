@@ -1,3 +1,0 @@
-constBool = ('true' | 'false' | \c | 'a')
-neki= ('false'+)
-neki2 = \c+'as d'

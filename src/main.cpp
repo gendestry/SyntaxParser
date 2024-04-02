@@ -17,6 +17,9 @@ int main(int argc, char **argv)
     while (std::getline(file, line))
     {
         // get string until first whitespace or equals sign
+
+        if (line[0] == '#')
+            continue;
         size_t namePos = line.find_first_of("= ");
         std::string name = line.substr(0, namePos);
 
@@ -33,9 +36,11 @@ int main(int argc, char **argv)
         tokenizer.print_tokens();
 
         Regex::Syntax syntax(tokenizer.get_tokens());
-        std::cout << syntax.parse() << std::endl;
-        syntax.printAst();
-        std::cout << std::endl;
+        if (syntax.parse())
+        {
+            syntax.printAst();
+            std::cout << std::endl;
+        }
     }
 
     return 0;

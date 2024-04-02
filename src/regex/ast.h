@@ -46,6 +46,14 @@ namespace Regex
             m_OpType = optype;
         }
 
+        ~AstNodeParen()
+        {
+            for (auto &op : ops)
+            {
+                delete op;
+            }
+        }
+
         std::string toString() override
         {
             std::string str = "AstOrNode<" + toOpString() + ">[";

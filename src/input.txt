@@ -1,0 +1,4 @@
+asd = \c+'asd'
+neki= ('false'+)
+constBool = ('true' | 'false' | \c+ | 'a')
+neki2 = \c+'as d'

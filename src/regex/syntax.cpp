@@ -5,43 +5,25 @@ namespace Regex
 {
     bool Syntax::isInter()
     {
+        Pos old = m_TokenPos;
         if (isParen())
         {
-            m_AstTree.push_back(new AstNodeParen(m_Ops));
+            m_AstTree.push_back(m_Op);
             return true;
         }
-        else
+        else if (isEscapeOp())
         {
-            int o = isOps();
-            if (o == 1)
-            {
-                m_AstTree.push_back(new AstNodeEscape(m_EscapeType, m_OpType));
-                return true;
-            }
-            else if (o == 2)
-            {
-                m_AstTree.push_back(new AstNodeTxt(m_Tokens[m_TokenPos].txt_value, m_OpType));
-                return true;
-            }
-            return false;
-        }
-
-        return false;
-    }
-
-    int Syntax::isOps()
-    {
-        if (isEscapeOp())
-        {
-
-            return 1;
+            m_AstTree.push_back(m_Op);
+            return true;
         }
         else if (isTxtOp())
         {
-
-            return 2;
+            m_AstTree.push_back(m_Op);
+            return true;
         }
-        return 0;
+
+        m_TokenPos = old;
+        return false;
     }
 
     bool Syntax::isParen()
@@ -51,7 +33,11 @@ namespace Regex
             Pos old = m_TokenPos;
             if (m_Tokens[m_TokenPos++].type == Token::OR)
             {
-                if (isOps())
+                if (isEscapeOp())
+                {
+                    return true;
+                }
+                else if (isTxtOp())
                 {
                     return true;
                 }
@@ -61,24 +47,34 @@ namespace Regex
             return false;
         };
 
+        std::vector<AstNodeOps *> ops;
         Pos old = m_TokenPos;
+
         if (m_Tokens[m_TokenPos].type == Token::LPAREN)
         {
-            std::vector<AstNodeOps *> ops;
             m_TokenPos++;
-            if (isOps())
+            if (isEscapeOp() || isTxtOp())
             {
-                ops.push_back(m_Ops.back());
+                ops.push_back(m_Op);
                 while (isOr())
                 {
-                    ops.push_back(m_Ops.back());
+                    ops.push_back(m_Op);
                 }
 
                 if (m_Tokens[m_TokenPos++].type == Token::RPAREN)
                 {
+                    isOperator();
+                    m_Op = new AstNodeParen(ops, m_OpType);
                     return true;
                 }
             }
+
+            for (auto &op : ops)
+            {
+                delete op;
+            }
+
+            m_TokenPos = old;
             return false;
         }
 
@@ -88,25 +84,31 @@ namespace Regex
 
     bool Syntax::isEscapeOp()
     {
+        Pos old = m_TokenPos;
         if (isEscape())
         {
             isOperator();
 
-            m_Ops.push_back(new AstNodeEscape(m_EscapeType, m_OpType));
+            m_Op = new AstNodeEscape(m_EscapeType, m_OpType);
             return true;
         }
+
+        m_TokenPos = old;
         return false;
     }
 
     bool Syntax::isTxtOp()
     {
+        if (m_TokenPos >= m_Tokens.size())
+            return false;
+
         Pos old = m_TokenPos;
         if (m_Tokens[m_TokenPos].type == Token::TXT)
         {
             m_TokenPos++;
             isOperator();
 
-            m_Ops.push_back(new AstNodeTxt(m_Tokens[old].txt_value, m_OpType));
+            m_Op = new AstNodeTxt(m_Tokens[old].txt_value, m_OpType);
             return true;
         }
 
@@ -116,6 +118,9 @@ namespace Regex
 
     bool Syntax::isEscape()
     {
+        if (m_TokenPos >= m_Tokens.size())
+            return false;
+
         switch (m_Tokens[m_TokenPos].type)
         {
         case Token::CHAR:
@@ -136,26 +141,34 @@ namespace Regex
         default:
             return false;
         }
+
         m_TokenPos++;
         return true;
     }
 
     bool Syntax::isOperator()
     {
+        if (m_TokenPos >= m_Tokens.size())
+        {
+            m_OpType = OpType::NONE;
+            return false;
+        }
+
         switch (m_Tokens[m_TokenPos].type)
         {
         case Token::PLUS:
             m_OpType = AstNodeOps::PLUS;
-            m_TokenPos++;
-            return true;
+            break;
         case Token::ASTERIX:
             m_OpType = AstNodeOps::ASTERIX;
-            m_TokenPos++;
-            return true;
+            break;
+        default:
+            m_OpType = OpType::NONE;
+            return false;
         }
 
-        m_OpType = OpType::NONE;
-        return false;
+        m_TokenPos++;
+        return true;
     }
 
     void Syntax::printAst()

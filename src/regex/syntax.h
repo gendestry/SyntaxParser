@@ -16,8 +16,9 @@ namespace Regex
         Pos m_TokenPos = 0;
         const TokenArray &m_Tokens;
 
-        std::vector<AstNode *> m_AstTree;
-        std::vector<AstNodeOps *> m_Ops;
+        std::vector<AstNodeOps *> m_AstTree;
+
+        AstNodeOps *m_Op;
         OpType m_OpType = OpType::NONE;
         EscapeType m_EscapeType = EscapeType::CHAR;
 
@@ -29,11 +30,6 @@ namespace Regex
         ~Syntax()
         {
             for (auto &node : m_AstTree)
-            {
-                delete node;
-            }
-
-            for (auto &node : m_Ops)
             {
                 delete node;
             }
@@ -54,8 +50,6 @@ namespace Regex
         bool isInter();
 
         bool isParen();
-        int isOps();
-
         bool isEscapeOp();
         bool isTxtOp();
 
