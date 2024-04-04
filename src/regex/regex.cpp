@@ -82,31 +82,36 @@ namespace Regex
         }
     }
 
-    bool Regex::match(std::string text)
+    bool Regex::match(const std::string &text)
     {
         if (!m_Valid)
             return false;
 
+        m_Match = "";
         Pattern &pattern = m_Syntax->getPattern();
         unsigned int start = 0;
 
         for (Pos i = 0; i < pattern.size(); i++)
         {
-            std::cout << "Matching: " << pattern[i]->toPrettyString() << std::endl;
+            PRINT(std::cout << "\n   Matching: " << pattern[i]->toPrettyString() << " => ";)
 
             auto [matched, current] = pattern[i]->match(text, start);
             if (matched)
             {
-                std::cout << "Matched: '" << text.substr(start, current - start) << "'" << std::endl;
+                std::string matchedText = text.substr(start, current - start);
+                PRINT(std::cout << "Matched: '" << matchedText << "' ";)
+                m_Match += matchedText;
+                m_MaxMatch = std::max(m_MaxMatch, current);
             }
             else
             {
-                std::cout << "Not matched" << std::endl;
+                PRINT(std::cout << "Not matched" << std::endl;)
                 return false;
             }
             start = current;
         }
 
-        return start == text.size();
+        // m_MaxMatch = start;
+        return start;
     }
 };

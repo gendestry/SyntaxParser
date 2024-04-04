@@ -21,21 +21,25 @@ namespace Regex
         if (isParen())
         {
             m_AstTree.push_back(m_Op);
+            // std::cout << "Paren: " << old << ", " << m_TokenPos << std::endl;
             return true;
         }
         else if (isEscapeOp())
         {
             m_AstTree.push_back(m_Op);
+            // std::cout << "Escape: " << old << ", " << m_TokenPos << std::endl;
             return true;
         }
         else if (isTxtOp())
         {
             m_AstTree.push_back(m_Op);
+            // std::cout << "Txt: " << old << ", " << m_TokenPos << std::endl;
             return true;
         }
         else if (isRangeOp())
         {
             m_AstTree.push_back(m_Op);
+            // std::cout << "Range: " << old << ", " << m_TokenPos << std::endl;
             return true;
         }
 
@@ -53,10 +57,10 @@ namespace Regex
             Pos old = m_TokenPos;
             if (m_Tokens[m_TokenPos++].type == Token::OR)
             {
-                if (isParen() || isEscapeOp() || isTxtOp())
+                if (isParen() || isEscapeOp() || isTxtOp() || isRangeOp())
                 {
                     ops.push_back(m_Op);
-                    while (isParen() || isEscapeOp() || isTxtOp())
+                    while (isParen() || isEscapeOp() || isTxtOp() || isRangeOp())
                     {
                         ops.push_back(m_Op);
                     }
@@ -77,10 +81,10 @@ namespace Regex
         {
             // lpar {inter+} (or inter+)+ rpar operators?
             m_TokenPos++;
-            if (isParen() || isEscapeOp() || isTxtOp())
+            if (isParen() || isEscapeOp() || isTxtOp() || isRangeOp())
             {
                 ops.push_back(m_Op);
-                while (isParen() || isEscapeOp() || isTxtOp())
+                while (isParen() || isEscapeOp() || isTxtOp() || isRangeOp())
                 {
                     ops.push_back(m_Op);
                 }
@@ -175,6 +179,7 @@ namespace Regex
                     {
                         if (m_Tokens[old + 1].type != m_Tokens[m_TokenPos].type)
                         {
+                            m_TokenPos = old;
                             return false;
                         }
 

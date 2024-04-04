@@ -2,8 +2,11 @@
 #include "../utils/font.h"
 #include <iostream>
 
+using namespace Utils;
+
 namespace Regex
 {
+
     unsigned int AstNodeParen::_match(std::string text, unsigned int st)
     {
         unsigned int start = st;
