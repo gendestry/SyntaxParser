@@ -1,11 +1,11 @@
-#constInt = ([1-9][0-9]* | '0')
+#constInt = ([1-9][0-9]* | '0'*)
 #constBool = ('true' | 'false')
 #constChar = '\''(\c | \C | \d | '\'')'\''
 whitespace = (' ' | \n)+
 
-# let = 'let'
+#let = 'let'
 
-# eq = '='
+eq = '='
 # plus = '+'
 # minus = '-'
 # mul = '*'

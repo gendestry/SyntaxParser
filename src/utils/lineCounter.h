@@ -13,6 +13,7 @@ namespace Utils
         LineCounter(const std::string &input);
 
         // returns the number of new lines (accumulated) at index
+        unsigned int accumulate(unsigned int index, unsigned int accOffset = 1);
         unsigned int operator[](unsigned int index);
         unsigned int getXOffset(unsigned int index);
         unsigned int numLinesInBetween(unsigned int start, unsigned int end);
@@ -23,6 +24,5 @@ namespace Utils
         }
 
     private:
-        unsigned int accumulate(unsigned int index, unsigned int accOffset = 1);
     };
 };

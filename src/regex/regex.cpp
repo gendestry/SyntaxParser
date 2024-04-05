@@ -1,5 +1,8 @@
 #include <iostream>
 #include "regex.h"
+#include "../utils/font.h"
+
+using Utils::Font;
 
 namespace Regex
 {
@@ -10,9 +13,10 @@ namespace Regex
 
         m_Syntax = std::make_unique<Syntax>(m_Tokenizer->get_tokens());
         m_Valid = m_Syntax->parse();
+
         if (!m_Valid)
         {
-            std::cout << "Error: invalid syntax" << std::endl;
+            std::cout << "Error: invalid regex syntax" << std::endl;
         }
     }
 
