@@ -4,22 +4,17 @@
 
 #include "../input/fileParser.h"
 #include "../utils/lineCounter.h"
+#include "token.h"
 
 namespace Parsing
 {
-    struct Token
-    {
-        unsigned int start, end;
-        std::string name;
-        bool ignore = false;
-    };
 
     class TokenParser
     {
         std::unique_ptr<Input::FileParser> m_FileParser;
         std::unique_ptr<Utils::LineCounter> m_LineCounter;
 
-        std::vector<Token> m_Tokens;
+        Tokens m_Tokens;
         Input::TokenMap m_TokenMap;
         std::string m_TokenPath;
         std::string m_Input;
@@ -33,9 +28,14 @@ namespace Parsing
 
         void printTokens();
 
-        const std::string &getInput() const
+        inline const std::string &getInput() const
         {
             return m_Input;
+        }
+
+        inline const Tokens &getTokens() const
+        {
+            return m_Tokens;
         }
     };
 };

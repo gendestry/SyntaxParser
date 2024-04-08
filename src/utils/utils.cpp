@@ -20,6 +20,28 @@ namespace Utils
         return content;
     }
 
+    std::vector<std::string> getFileStringVec(std::string path)
+    {
+        std::ifstream file(path);
+
+        if (!file.is_open())
+        {
+            throw std::runtime_error("Error: file '" + path + "' not found");
+            return {};
+        }
+
+        std::vector<std::string> content;
+        std::string line;
+
+        while (std::getline(file, line))
+        {
+            content.push_back(line);
+        }
+
+        file.close();
+        return content;
+    }
+
     std::string sanitizeString(const std::string &str)
     {
         std::string sanitized = str;
@@ -32,5 +54,47 @@ namespace Utils
         }
 
         return sanitized;
+    }
+
+    std::vector<std::string> split(const std::string &str, const std::string &delim)
+    {
+        std::vector<std::string> tokens;
+        size_t prev = 0, pos = 0;
+
+        do
+        {
+            pos = str.find(delim, prev);
+            if (pos == std::string::npos)
+                pos = str.length();
+
+            std::string token = str.substr(prev, pos - prev);
+            if (!token.empty())
+                tokens.push_back(token);
+
+            prev = pos + delim.length();
+        } while (pos < str.length() && prev < str.length());
+
+        return tokens;
+    }
+
+    std::vector<std::string> splitByWhitespace(const std::string &str)
+    {
+        std::vector<std::string> tokens;
+        size_t prev = 0, pos = 0;
+
+        do
+        {
+            pos = str.find_first_of(" \t", prev);
+            if (pos == std::string::npos)
+                pos = str.length();
+
+            std::string token = str.substr(prev, pos - prev);
+            if (!token.empty())
+                tokens.push_back(token);
+
+            prev = pos + 1;
+        } while (pos < str.length() && prev < str.length());
+
+        return tokens;
     }
 };

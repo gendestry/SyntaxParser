@@ -1,0 +1,2 @@
+decl = letdecl | fundecl
+letdecl = LET IDENTIFIER  |   EQ CONST_INT

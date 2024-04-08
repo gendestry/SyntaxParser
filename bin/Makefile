@@ -4,8 +4,7 @@ clean: main
 	rm main
 
 prepare: main
-	@cp ../src/data/tokens.txt .
-	@cp ../src/data/input.txt .
+	@cp ../src/data/*.txt .
 
 run: main prepare
 	@./$<

@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "utils/font.h"
-#include "parsing/parser.h"
+#include "parsing/tokenParser.h"
+#include "parsing/syntaxParser.h"
 
 using Utils::Font;
 
@@ -17,5 +18,9 @@ int main(int argc, char **argv)
     }
 
     parser.printTokens();
+
+    Parsing::SyntaxParser syntaxParser("syntax.txt", parser.getTokens());
+    syntaxParser.parseSyntax();
+    syntaxParser.printParsedLines();
     return 0;
 }

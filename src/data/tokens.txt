@@ -1,11 +1,11 @@
-#constInt = ([1-9][0-9]* | '0'*)
-#constBool = ('true' | 'false')
+CONST_INT = ([1-9][0-9]* | '0'*)
+#CONST_BOOL = ('true' | 'false')
 #constChar = '\''(\c | \C | \d | '\'')'\''
-whitespace = (' ' | \n)+
+!WHITESPACE = (' ' | \n)+
 
-#let = 'let'
+LET = 'let'
 
-eq = '='
+EQ = '='
 # plus = '+'
 # minus = '-'
 # mul = '*'
@@ -23,8 +23,7 @@ fun = 'fun'
 
 # lp = '('
 # rp = ')'
-lbk = '{'
-rbk = '}'
+# lbk = '{'
+# rbk = '}'
 
-
-# identifier = \T+
+IDENTIFIER = \T+

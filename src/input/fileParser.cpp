@@ -65,7 +65,7 @@ namespace Input
 
     void FileParser::print()
     {
-        std::cout << Font::bold << Font::fgreen << " --- TOKENS --- " << Font::reset << std::endl;
+        std::cout << Font::bold << Font::fgreen << " ==== INPUT TOKENS ==== " << Font::reset << std::endl;
         for (auto &token : tokenMaps)
         {
             std::cout << Font::fyellow << "'" << token.tokenName << "'" << Font::reset << ": "

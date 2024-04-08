@@ -1,11 +1,8 @@
-#include "parser.h"
+#include "tokenParser.h"
 
 #include <iostream>
-
-#include "../input/fileParser.h"
 #include "../utils/font.h"
 #include "../utils/utils.h"
-#include "../utils/lineCounter.h"
 
 using Utils::Font;
 
@@ -47,7 +44,7 @@ namespace Parsing
         m_LineCounter = std::make_unique<Utils::LineCounter>(m_Input);
 
         std::cout << std::endl
-                  << Font::fgreen << " --- INPUT ---- \n"
+                  << Font::fgreen << " ==== INPUT ==== \n"
                   << Font::reset
                   << Font::forange << "'" << m_Input << "'" << Font::reset << "\n"
                   << std::endl;
@@ -99,7 +96,7 @@ namespace Parsing
                     }
                     else
                     {
-                        std::cout << Font::fred << "Matched token[" << _line + 1 << "-" << _numLinesBetween << "][";
+                        std::cout << Font::fred << "Matched token[" << _line + 1 << "-" << _line + _numLinesBetween << "][";
                     }
 
                     std::cout << _start << ", " << _end << "]: "
@@ -133,7 +130,7 @@ namespace Parsing
     void TokenParser::printTokens()
     {
         std::cout << "\n"
-                  << Font::fgreen << " --- PARSED TOKENS ---- \n"
+                  << Font::fgreen << " ==== PARSED TOKENS ==== \n"
                   << Font::reset;
 
         unsigned int oldLine = 0;
