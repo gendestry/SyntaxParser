@@ -20,7 +20,8 @@ int main(int argc, char **argv)
     parser.printTokens();
 
     Parsing::SyntaxParser syntaxParser("syntax.txt", parser.getTokens());
-    syntaxParser.parseSyntax();
-    syntaxParser.printParsedLines();
+    if (syntaxParser.parseSyntax())
+        syntaxParser.printRules();
+    // syntaxParser.printParsedLines();
     return 0;
 }

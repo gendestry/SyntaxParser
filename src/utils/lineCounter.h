@@ -10,6 +10,8 @@ namespace Utils
 
     public:
         std::vector<unsigned int> lines;
+
+        // input = string with newlines so the whole file in a string lets say
         LineCounter(const std::string &input);
 
         // returns the number of new lines (accumulated) at index

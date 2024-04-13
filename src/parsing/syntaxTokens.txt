@@ -1,0 +1,7 @@
+
+LBRAC = '['
+RBRAC = ']'
+LPARE = '('
+RPARE = ')'
+S_ID = \c+
+L_ID = \C+ 

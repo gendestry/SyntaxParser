@@ -1,2 +1,7 @@
-decl = letdecl | fundecl
-letdecl = LET IDENTIFIER  |   EQ CONST_INT
+constExpr -> IDENTIFIER | CONST_INT;;
+sthExpr -> nek;;
+
+expr [AstExpr expr] ->
+    CONST_INT { expr = AstConstIntExpr($CONST_INT.val)}
+| CONST_VOID | CONST_CHAR+;;
+    
